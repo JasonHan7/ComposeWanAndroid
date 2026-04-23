@@ -1,0 +1,44 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <group
+        android:pivotX="54"
+        android:pivotY="54"
+        android:scaleX="0.75"
+        android:scaleY="0.75">
+
+        <!-- 安卓标志 (上半身) -->
+        <path
+            android:fillColor="#FFFFFF"
+            android:pathData="M65.3,32.828l3.8,-6.6c0.2,-0.4 0.1,-0.9 -0.3,-1.1c-0.4,-0.2 -0.9,-0.1 -1.1,0.3l-3.9,6.7c-6.3,-2.8 -13.4,-2.8 -19.7,0l-3.9,-6.7c-0.2,-0.4 -0.7,-0.5 -1.1,-0.3C38.8,25.328 38.7,25.828 38.9,26.228l3.8,6.6C36.2,36.428 31.7,43.028 31,50.928h46C76.3,43.028 71.8,36.428 65.3,32.828z" />
+
+        <!-- 机器人眼睛 -->
+        <path
+            android:fillColor="#2196F3"
+            android:pathData="M43.4,44.328c-0.8,0 -1.5,-0.5 -1.8,-1.2c-0.3,-0.7 -0.1,-1.5 0.4,-2.1c0.5,-0.5 1.4,-0.7 2.1,-0.4c0.7,0.3 1.2,1 1.2,1.8C45.3,43.528 44.5,44.328 43.4,44.328z" />
+        <path
+            android:fillColor="#2196F3"
+            android:pathData="M64.6,44.328c-0.8,0 -1.5,-0.5 -1.8,-1.2s-0.1,-1.5 0.4,-2.1c0.5,-0.5 1.4,-0.7 2.1,-0.4c0.7,0.3 1.2,1 1.2,1.8C66.5,43.528 65.6,44.328 64.6,44.328z" />
+
+        <!-- 重置文字样式：采用标准无衬线字体风格，将 O 修正为标准的长圆角矩形，视觉更自然 -->
+        <group android:translateX="14" android:translateY="58">
+            <!-- C -->
+            <path android:fillColor="#FFFFFF" android:pathData="M0,0 h10 v2.5 h-7.5 v5 h7.5 v2.5 h-10 z" />
+            <!-- O - 修正为标准长圆角矩形 -->
+            <path android:fillColor="#FFFFFF" android:pathData="M13,0 h8 a2,2 0 0 1 2,2 v6 a2,2 0 0 1 -2,2 h-8 a2,2 0 0 1 -2,-2 v-6 a2,2 0 0 1 2,-2 z M15,2.5 v5 h4 v-5 z" />
+            <!-- M -->
+            <path android:fillColor="#FFFFFF" android:pathData="M24,0 h2.5 l2.5,4 l2.5,-4 h2.5 v10 h-2.5 v-5.5 l-2.5,4 l-2.5,-4 v5.5 h-2.5 z" />
+            <!-- P -->
+            <path android:fillColor="#FFFFFF" android:pathData="M38,0 h8 v6 h-5.5 v4 h-2.5 z M40.5,2.5 h3 v1 h-3 z" />
+            <!-- O - 修正 -->
+            <path android:fillColor="#FFFFFF" android:pathData="M49,0 h8 a2,2 0 0 1 2,2 v6 a2,2 0 0 1 -2,2 h-8 a2,2 0 0 1 -2,-2 v-6 a2,2 0 0 1 2,-2 z M51,2.5 v5 h4 v-5 z" />
+            <!-- S -->
+            <path android:fillColor="#FFFFFF" android:pathData="M60,0 h10 v2.5 h-7.5 v1.25 h7.5 v6.25 h-10 v-2.5 h7.5 v-1.25 h-7.5 z" />
+            <!-- E -->
+            <path android:fillColor="#FFFFFF" android:pathData="M72,0 h10 v2.5 h-7.5 v1.25 h5.5 v2.5 h-5.5 v1.25 h7.5 v2.5 h-10 z" />
+        </group>
+    </group>
+</vector>

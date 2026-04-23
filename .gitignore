@@ -1,0 +1,54 @@
+# Android and IntelliJ IDEA
+*.iml
+.gradle
+/local.properties
+.idea
+.idea/caches/
+.idea/libraries/
+.idea/modules.xml
+.idea/workspace.xml
+.idea/navEditor.xml
+.idea/assetWizardSettings.xml
+.idea/shelf/
+.idea/inspectionProfiles/
+.idea/render.xml
+.idea/modules/
+.idea/gradle.xml
+.idea/misc.xml
+
+# Build artifacts
+/build
+/captures
+.externalNativeBuild
+.cxx
+local.properties
+*.apk
+*.ap_
+*.dex
+*.class
+/out/
+/gen/
+
+# Gradle
+/gradlew
+/gradlew.bat
+/gradle/wrapper/gradle-wrapper.jar
+
+# Kotlin and NDK
+.kotlin/
+*.kotlin_module
+obj/
+libs/
+
+# Log and OS related
+*.log
+.DS_Store
+Thumbs.db
+.agents/
+
+# Keystores and sensitive data
+*.jks
+*.keystore
+*.p12
+google-services.json
+/.idea/vcs.xml

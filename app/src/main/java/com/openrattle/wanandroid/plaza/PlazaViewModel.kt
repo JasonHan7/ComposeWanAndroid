@@ -1,0 +1,165 @@
+package com.openrattle.wanandroid.plaza
+
+import androidx.lifecycle.viewModelScope
+import com.openrattle.base.AppException
+import com.openrattle.base.onError
+import com.openrattle.base.model.Article
+import com.openrattle.base.utils.LogUtil
+import com.openrattle.wanandroid.history.AddHistoryUseCase
+import com.openrattle.wanandroid.collect.CollectArticleUseCase
+import com.openrattle.core.MviViewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
+import javax.inject.Inject
+
+private const val TAG = "PlazaVM"
+
+@HiltViewModel
+class PlazaViewModel @Inject constructor(
+    private val getPlazaArticlesUseCase: GetPlazaArticlesUseCase,
+    private val loadMorePlazaArticlesUseCase: LoadMorePlazaArticlesUseCase,
+    private val shareArticleUseCase: ShareArticleUseCase,
+    private val collectArticleUseCase: CollectArticleUseCase,
+    private val addHistoryUseCase: AddHistoryUseCase
+) : MviViewModel<PlazaState, PlazaIntent, PlazaEffect>() {
+
+    override fun initialState(): PlazaState = PlazaState()
+
+    init {
+        viewModelScope.launch {
+            getPlazaArticlesUseCase.cachedArticles.collectLatest { articles ->
+                updateState { it.copy(articles = articles) }
+            }
+        }
+        dispatch(PlazaIntent.LoadData)
+    }
+
+    override suspend fun handleIntent(intent: PlazaIntent) {
+        when (intent) {
+            is PlazaIntent.LoadData -> loadData()
+            is PlazaIntent.Refresh -> refresh()
+            is PlazaIntent.LoadMore -> loadMore()
+            is PlazaIntent.ToggleCollect -> toggleCollect(intent.article)
+            is PlazaIntent.ShareArticle -> shareArticle(intent.title, intent.link)
+            is PlazaIntent.SaveHistory -> saveHistory(intent.article)
+        }
+    }
+
+    private suspend fun saveHistory(article: Article) {
+        addHistoryUseCase(article)
+    }
+
+    private suspend fun shareArticle(title: String, link: String) {
+        if (state.value.isSharing) return
+        
+        updateState { it.copy(isSharing = true) }
+        
+        shareArticleUseCase(title, link)
+            .onSuccess {
+                updateState { it.copy(isSharing = false) }
+                emitEffect(PlazaEffect.ShowMessage("分享成功"))
+                emitEffect(PlazaEffect.NavigateBack)
+                // 分享成功后触发一次刷新，以便看到自己的分享（如果审核通过的话）
+                refresh()
+            }
+            .onError { e ->
+                updateState { it.copy(isSharing = false) }
+                handleException(e)
+            }
+    }
+
+    private suspend fun toggleCollect(article: Article) {
+        val result = if (article.collect) {
+            collectArticleUseCase.uncollectFromArticle(article.id)
+        } else {
+            collectArticleUseCase.collect(article.id)
+        }
+        
+        result.onSuccess {
+            emitEffect(PlazaEffect.ShowMessage(if (article.collect) "取消成功" else "收藏成功"))
+        }.onError { e ->
+            handleException(e)
+        }
+    }
+
+    /**
+     * 统一异常处理
+     */
+    private fun handleException(exception: AppException) {
+        when (exception) {
+            is AppException.Api.Unauthorized -> {
+                emitEffect(PlazaEffect.ShowMessage("请先登录"))
+                emitEffect(PlazaEffect.NavigateToLogin)
+            }
+            else -> {
+                emitEffect(PlazaEffect.ShowMessage(exception.message))
+            }
+        }
+    }
+
+    private suspend fun loadData() {
+        if (state.value.isLoading && state.value.articles.isNotEmpty()) return
+
+        updateState { it.copy(isLoading = true, error = null) }
+
+        getPlazaArticlesUseCase(forceRefresh = false)
+            .onSuccess { isOver ->
+                updateState { it.copy(isLoading = false, hasMore = !isOver) }
+                // 后台静默刷新
+                viewModelScope.launch {
+                    getPlazaArticlesUseCase.refresh()
+                }
+            }
+            .onFailure { e ->
+                updateState { it.copy(isLoading = false, error = e.message) }
+            }
+    }
+
+    private suspend fun refresh() {
+        if (state.value.isLoading) return
+
+        updateState { it.copy(isLoading = true, error = null) }
+
+        getPlazaArticlesUseCase(forceRefresh = true)
+            .onSuccess { isOver ->
+                updateState { 
+                    it.copy(
+                        isLoading = false,
+                        currentPage = 0,
+                        hasMore = !isOver
+                    ) 
+                }
+            }
+            .onFailure { e ->
+                updateState { it.copy(isLoading = false, error = e.message) }
+                emitEffect(PlazaEffect.ShowMessage(e.message ?: "刷新失败"))
+            }
+    }
+
+    private suspend fun loadMore() {
+        val currentState = state.value
+        if (currentState.isLoadingMore || !currentState.hasMore || currentState.isLoading) return
+
+        // 计算下一页：取当前列表中的最大页码 + 1
+        val maxPage = currentState.articles.maxOfOrNull { it.page } ?: -1
+        val nextPage = maxPage + 1
+
+        LogUtil.d(TAG, "⬇️ 广场加载更多: nextPage=$nextPage, currentSize=${currentState.articles.size}")
+        updateState { it.copy(isLoadingMore = true) }
+
+        loadMorePlazaArticlesUseCase(nextPage)
+            .onSuccess { (_, isOver) ->
+                updateState {
+                    it.copy(
+                        isLoadingMore = false,
+                        hasMore = !isOver
+                    )
+                }
+            }
+            .onFailure { e ->
+                updateState { it.copy(isLoadingMore = false) }
+                emitEffect(PlazaEffect.ShowMessage(e.message ?: "加载失败"))
+            }
+    }
+}

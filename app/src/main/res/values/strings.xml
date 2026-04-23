@@ -1,0 +1,85 @@
+<resources>
+    <string name="app_name">WanAndroid</string>
+
+    <!-- Navigation Labels -->
+    <string name="nav_home">首页</string>
+    <string name="nav_plaza">广场</string>
+    <string name="nav_qa">问答</string>
+    <string name="nav_system">导航</string>
+    <string name="nav_mine">我的</string>
+
+    <!-- Common -->
+    <string name="back">返回</string>
+    <string name="close">关闭</string>
+    <string name="more">更多</string>
+    <string name="refresh">刷新</string>
+    <string name="search">搜索</string>
+    <string name="loading">加载中…</string>
+    <string name="no_more_data">没有更多数据了</string>
+    <string name="error_msg">错误: %1$s</string>
+
+    <!-- WebView -->
+    <string name="web_details">详情</string>
+    <string name="reader_mode">阅读模式 (一键净化)</string>
+    <string name="exit_reader_mode">退出阅读模式</string>
+    <string name="copy_link">复制链接</string>
+    <string name="open_in_browser">浏览器打开</string>
+    <string name="copied_to_clipboard">已复制到剪贴板</string>
+    <string name="open_failed">打开失败</string>
+    <string name="no_content_detected">未检测到正文内容</string>
+
+    <!-- Mine Screen -->
+    <string name="settings">设置</string>
+    <string name="my_favorites">我的收藏</string>
+    <string name="my_shares">我的分享</string>
+    <string name="rank_list">积分排行</string>
+    <string name="browsing_history">浏览历史</string>
+    <string name="about_us">关于我们</string>
+    <string name="more_settings">更多设置</string>
+    <string name="logout">退出登录</string>
+    <string name="click_to_login">点击登录</string>
+    <string name="login_for_more">登录后更精彩</string>
+    <string name="level">等级</string>
+    <string name="coins">积分</string>
+    <string name="rank">排名</string>
+    <string name="user_id">ID: %1$s</string>
+    <string name="collect">收藏</string>
+    <string name="dark_mode">主题模式</string>
+    <string name="eye_protection">护眼模式</string>
+
+    <!-- Login Screen -->
+    <string name="login">登录</string>
+    <string name="username">用户名</string>
+    <string name="password">密码</string>
+    <string name="login_success">登录成功</string>
+    <string name="please_enter_username">请输入用户名</string>
+    <string name="please_enter_password">请输入密码</string>
+    <string name="welcome_back">欢迎回来</string>
+    <string name="sign_in_to_continue">登录你的 WanAndroid 账号</string>
+    <string name="no_account_register">没有账号？点击注册</string>
+
+    <!-- Register Screen -->
+    <string name="register">注册</string>
+    <string name="repassword">确认密码</string>
+    <string name="register_success">注册成功</string>
+    <string name="please_enter_repassword">请再次输入密码</string>
+    <string name="passwords_not_match">两次输入的密码不一致</string>
+    <string name="create_account">创建账号</string>
+    <string name="join_us_today">加入 WanAndroid 大家庭</string>
+    <string name="already_have_account">已有账号？点击登录</string>
+
+    <!-- Search Screen -->
+    <string name="search_hint">多个搜索关键词用空格隔开</string>
+    <string name="hot_search">热门搜索</string>
+    <string name="search_history">搜索历史</string>
+    <string name="clear_history">清空</string>
+    <string name="no_search_results">未搜索到相关文章</string>
+
+    <!-- Share Article Screen -->
+    <string name="share_article">分享文章</string>
+    <string name="article_title">文章标题(100字以内)</string>
+    <string name="enter_article_title">请输入文章标题</string>
+    <string name="article_link">文章链接</string>
+    <string name="submit">提交</string>
+    <string name="share_article_tips">你可以分享任何一篇觉得不错的文章，每日首次分享加积分哟！\n\n1. 只要是任何好文都可以分享哈，并不一定要是原创！投递的文章会进入广场 tab;\n2. CSDN，掘金，简书等官方博客站点会直接通过，不需要审核;\n3. 其他个人站点会进入审核阶段，不要投递任何无效链接，测试的请尽快删除，否则可能会对你的账号产生一定影响;\n4. 目前处于测试阶段，如果你发现500等错误，可以向我提交日志，让我们一起使网站变得更好。\n5. 由于本站只有我一个人开发与维护，会尽力保证24小时内审核，当然有可能哪天太累，会延期，请保持佛系...</string>
+</resources>
