@@ -3,16 +3,18 @@ name: Android CI/CD
 on:
   push:
     tags:
-      - 'v*' # 当推送以 v 开头的 tag 时触发 (例如 v1.0.0)
-  workflow_dispatch: # 支持手动触发
+      - 'v*'
+  workflow_dispatch:
+
+# 放在顶层，确保覆盖整个工作流
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    env:
-      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true' # 解决 Node.js 20 弃用警告
     permissions:
-      contents: write # 必须赋予写权限才能创建 Release
+      contents: write
 
     steps:
       - name: Checkout Code
@@ -44,8 +46,9 @@ jobs:
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: WanAndroid-APK-${{ github.ref_name }}
-          path: app/build/outputs/apk/release/WanAndroid_${{ github.ref_name }}.apk
+          name: WanAndroid-APK
+          path: app/build/outputs/apk/release/*.apk
+          retention-days: 7
 
       - name: Create Release
         uses: softprops/action-gh-release@v2
