@@ -29,10 +29,8 @@ local.properties
 /out/
 /gen/
 
-# Gradle
-/gradlew
-/gradlew.bat
-/gradle/wrapper/gradle-wrapper.jar
+# Gradle (Do NOT ignore wrapper files)
+/.gradle
 
 # Kotlin and NDK
 .kotlin/

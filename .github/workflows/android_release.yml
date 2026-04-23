@@ -9,6 +9,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write # 必须赋予写权限才能创建 Release
 
     steps:
       - name: Checkout Code
@@ -25,11 +27,18 @@ jobs:
         run: chmod +x gradlew
 
       - name: Build Release APK
-        run: ./gradlew :app:assembleRelease
+        run: ./gradlew :app:assembleRelease --stacktrace
 
       - name: Rename APK
         if: startsWith(github.ref, 'refs/tags/')
-        run: mv app/build/outputs/apk/release/app-release-unsigned.apk app/build/outputs/apk/release/WanAndroid_${{ github.ref_name }}.apk
+        run: |
+          APK_PATH=$(find app/build/outputs/apk/release/ -name "*.apk" | head -n 1)
+          if [ -n "$APK_PATH" ]; then
+            mv "$APK_PATH" app/build/outputs/apk/release/WanAndroid_${{ github.ref_name }}.apk
+          else
+            echo "No APK found"
+            exit 1
+          fi
 
       - name: Create Release
         uses: softprops/action-gh-release@v2
