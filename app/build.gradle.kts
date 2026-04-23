@@ -11,12 +11,24 @@ android {
     namespace = "com.openrattle.wanandroid"
     compileSdk = 35
 
+    // 根据 APP_VERSION_NAME (x.y.z) 自动计算唯一递增的 versionCode
+    //
+    // versionName = "1.0.0" -> versionCode = 10000
+    // versionName = "1.2.11" -> versionCode = 10211
+    // versionName = "2.10.5" -> versionCode = 21005
+    val appVersionName = project.property("APP_VERSION_NAME").toString()
+    val appVersionCode = appVersionName.split(".").let {
+        if (it.size >= 3) {
+            it[0].toInt() * 10000 + it[1].toInt() * 100 + it[2].toInt()
+        } else 1
+    }
+
     defaultConfig {
         applicationId = "com.openrattle.wanandroid"
         minSdk = 24
         targetSdk = 35
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = appVersionCode
+        versionName = appVersionName
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
