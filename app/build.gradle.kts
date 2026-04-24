@@ -86,7 +86,7 @@ dependencies {
     // Common-UI 模块
     implementation(project(":common-ui"))
 
-    implementation(libs.androidx.activity.compose)
+    implementation(libs.bundles.androidx.activity)
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
