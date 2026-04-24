@@ -33,13 +33,31 @@ jobs:
       - name: Build Release APK
         run: ./gradlew :app:assembleRelease --stacktrace
 
+      - name: Sign APK
+        uses: r0adkll/sign-android-release@v1
+        id: sign_app
+        with:
+          releaseDirectory: app/build/outputs/apk/release
+          signingKeyBase64: ${{ secrets.SIGNING_KEYSTORE_BASE64 }}
+          alias: ${{ secrets.SIGNING_KEY_ALIAS }}
+          keyStorePassword: ${{ secrets.SIGNING_STORE_PASSWORD }}
+          keyPassword: ${{ secrets.SIGNING_KEY_PASSWORD }}
+        env:
+          BUILD_TOOLS_VERSION: "35.0.0"
+
       - name: Rename APK
         run: |
-          APK_PATH=$(find app/build/outputs/apk/release/ -name "*.apk" | head -n 1)
-          if [ -n "$APK_PATH" ]; then
-            mv "$APK_PATH" app/build/outputs/apk/release/WanAndroid_${{ github.ref_name }}.apk
+          # 签名后的文件通常带有 -signed 后缀
+          SIGNED_APK=$(find app/build/outputs/apk/release/ -name "*-signed.apk" | head -n 1)
+          if [ -z "$SIGNED_APK" ]; then
+             # 兜底：如果没找到带 signed 后缀的，就找普通 release apk
+             SIGNED_APK=$(find app/build/outputs/apk/release/ -name "*release.apk" | head -n 1)
+          fi
+          
+          if [ -n "$SIGNED_APK" ]; then
+            mv "$SIGNED_APK" app/build/outputs/apk/release/WanAndroid_${{ github.ref_name }}.apk
           else
-            echo "No APK found"
+            echo "No signed APK found"
             exit 1
           fi
 
@@ -47,7 +65,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: WanAndroid-APK
-          path: app/build/outputs/apk/release/*.apk
+          path: app/build/outputs/apk/release/WanAndroid_${{ github.ref_name }}.apk
           retention-days: 7
 
       - name: Create Release
