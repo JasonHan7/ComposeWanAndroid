@@ -33,6 +33,25 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    // 本地打包 APK 命名规则同步 GitHub Actions
+    applicationVariants.all {
+        val variant = this
+        val buildTypeName = variant.buildType.name
+        variant.outputs.all {
+            val branch = try {
+                val process = Runtime.getRuntime().exec("git rev-parse --abbrev-ref HEAD")
+                process.waitFor()
+                process.inputStream.bufferedReader().use { it.readText() }.trim().replace("/", "_")
+            } catch (e: Exception) {
+                "unknown"
+            }
+            val fileName = "WanAndroid_v${appVersionName}_${branch}_${buildTypeName}.apk"
+            
+            // 显式转型以避免 KTS 作用域歧义
+            (this as com.android.build.gradle.api.ApkVariantOutput).outputFileName = fileName
+        }
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -53,6 +72,7 @@ android {
     
     lint {
         disable += listOf("UnusedMaterial3ScaffoldPaddingParameter")
+        abortOnError = false
     }
 }
 

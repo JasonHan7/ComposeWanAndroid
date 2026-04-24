@@ -30,10 +30,10 @@ jobs:
       - name: Grant Execute Permission for Gradlew
         run: chmod +x gradlew
 
-      - name: Build Release APK
-        run: ./gradlew :app:assembleRelease --stacktrace
+      - name: Build APKs
+        run: ./gradlew :app:assembleDebug :app:assembleRelease --stacktrace
 
-      - name: Sign APK
+      - name: Sign Release APK
         uses: r0adkll/sign-android-release@v1
         id: sign_app
         with:
@@ -45,27 +45,26 @@ jobs:
         env:
           BUILD_TOOLS_VERSION: "35.0.0"
 
-      - name: Rename APK
+      - name: Rename and Prepare APKs
         run: |
-          # 签名后的文件通常带有 -signed 后缀
-          SIGNED_APK=$(find app/build/outputs/apk/release/ -name "*-signed.apk" | head -n 1)
-          if [ -z "$SIGNED_APK" ]; then
-             # 兜底：如果没找到带 signed 后缀的，就找普通 release apk
-             SIGNED_APK=$(find app/build/outputs/apk/release/ -name "*release.apk" | head -n 1)
-          fi
+          VERSION_NAME=$(grep 'APP_VERSION_NAME' gradle.properties | cut -d'=' -f2)
+          TAG_OR_BRANCH="${{ github.ref_name }}"
           
-          if [ -n "$SIGNED_APK" ]; then
-            mv "$SIGNED_APK" app/build/outputs/apk/release/WanAndroid_${{ github.ref_name }}.apk
-          else
-            echo "No signed APK found"
-            exit 1
-          fi
+          # 处理 Debug 包
+          DEBUG_APK=$(find app/build/outputs/apk/debug/ -name "*.apk" | head -n 1)
+          mv "$DEBUG_APK" app/build/outputs/apk/debug/WanAndroid_v${VERSION_NAME}_${TAG_OR_BRANCH}_debug.apk
+          
+          # 处理 Release (已签名) 包
+          RELEASE_APK=$(find app/build/outputs/apk/release/ -name "*-signed.apk" | head -n 1)
+          mv "$RELEASE_APK" app/build/outputs/apk/release/WanAndroid_v${VERSION_NAME}_${TAG_OR_BRANCH}_release.apk
 
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: WanAndroid-APK
-          path: app/build/outputs/apk/release/WanAndroid_${{ github.ref_name }}.apk
+          name: WanAndroid-APKs
+          path: |
+            app/build/outputs/apk/debug/*.apk
+            app/build/outputs/apk/release/*.apk
           retention-days: 7
 
       - name: Create Release
@@ -73,7 +72,8 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/')
         with:
           files: |
-            app/build/outputs/apk/release/WanAndroid_${{ github.ref_name }}.apk
+            app/build/outputs/apk/release/*_release.apk
+            app/build/outputs/apk/debug/*_debug.apk
           name: Release ${{ github.ref_name }}
           draft: false
           prerelease: false
