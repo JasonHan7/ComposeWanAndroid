@@ -52,115 +52,120 @@ fun NaviScreen(
             )
         }
     ) { padding ->
-        if (state.isLoading && state.naviList.isEmpty()) {
-            Box(modifier = Modifier.fillMaxSize().padding(padding), contentAlignment = Alignment.Center) {
-                WanLoadingIndicator()
+        val error = state.error
+        when {
+            state.isLoading && state.naviList.isEmpty() -> {
+                Box(modifier = Modifier.fillMaxSize().padding(padding), contentAlignment = Alignment.Center) {
+                    WanLoadingIndicator()
+                }
             }
-        } else if (state.error != null && state.naviList.isEmpty()) {
-            Box(modifier = Modifier.fillMaxSize().padding(padding), contentAlignment = Alignment.Center) {
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text(
-                        text = stringResource(R.string.error_msg, state.error!!),
-                        color = MaterialTheme.colorScheme.error,
-                        style = MaterialTheme.typography.bodyMedium,
-                        textAlign = TextAlign.Center
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Button(onClick = { viewModel.dispatch(NaviIntent.LoadData) }) {
-                        Text("重新加载")
+            error != null && state.naviList.isEmpty() -> {
+                Box(modifier = Modifier.fillMaxSize().padding(padding), contentAlignment = Alignment.Center) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Text(
+                            text = stringResource(R.string.error_msg, error),
+                            color = MaterialTheme.colorScheme.error,
+                            style = MaterialTheme.typography.bodyMedium,
+                            textAlign = TextAlign.Center
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Button(onClick = { viewModel.dispatch(NaviIntent.LoadData) }) {
+                            Text("重新加载")
+                        }
                     }
                 }
             }
-        } else {
-            Row(
-                modifier = Modifier
-                    .padding(padding)
-                    .fillMaxSize()
-            ) {
-                // 左侧导航栏
-                LazyColumn(
-                    state = leftListState,
+            else -> {
+                Row(
                     modifier = Modifier
-                        .width(105.dp)
-                        .fillMaxHeight()
-                        .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.6f))
+                        .padding(padding)
+                        .fillMaxSize()
                 ) {
-                    itemsIndexed(state.naviList) { index, navi ->
-                        val isSelected = state.selectedIndex == index
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(56.dp)
-                                .background(if (isSelected) MaterialTheme.colorScheme.background else Color.Transparent)
-                                .clickable {
-                                    viewModel.dispatch(NaviIntent.SelectCategory(index))
-                                },
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text(
-                                text = navi.name,
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
-                                fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
-                                maxLines = 2,
-                                modifier = Modifier.padding(horizontal = 8.dp),
-                                textAlign = TextAlign.Center
-                            )
-                            if (isSelected) {
-                                Box(
-                                    modifier = Modifier
-                                        .align(Alignment.CenterStart)
-                                        .width(6.dp)
-                                        .fillMaxHeight()
-                                        .background(MaterialTheme.colorScheme.primary)
+                    // 左侧导航栏
+                    LazyColumn(
+                        state = leftListState,
+                        modifier = Modifier
+                            .width(105.dp)
+                            .fillMaxHeight()
+                            .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.6f))
+                    ) {
+                        itemsIndexed(state.naviList) { index, navi ->
+                            val isSelected = state.selectedIndex == index
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(56.dp)
+                                    .background(if (isSelected) MaterialTheme.colorScheme.background else Color.Transparent)
+                                    .clickable {
+                                        viewModel.dispatch(NaviIntent.SelectCategory(index))
+                                    },
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text(
+                                    text = navi.name,
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
+                                    fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
+                                    maxLines = 2,
+                                    modifier = Modifier.padding(horizontal = 8.dp),
+                                    textAlign = TextAlign.Center
                                 )
+                                if (isSelected) {
+                                    Box(
+                                        modifier = Modifier
+                                            .align(Alignment.CenterStart)
+                                            .width(6.dp)
+                                            .fillMaxHeight()
+                                            .background(MaterialTheme.colorScheme.primary)
+                                    )
+                                }
                             }
                         }
                     }
-                }
 
-                VerticalDivider(
-                    thickness = 0.5.dp,
-                    color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)
-                )
+                    VerticalDivider(
+                        thickness = 0.5.dp,
+                        color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)
+                    )
 
-                // 右侧内容区
-                LazyColumn(
-                    state = rightListState,
-                    modifier = Modifier
-                        .weight(1f)
-                        .fillMaxHeight()
-                        .padding(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
-                ) {
-                    if (state.naviList.isNotEmpty()) {
-                        val selectedNavi = state.naviList[state.selectedIndex]
-                        item {
-                            Text(
-                                text = selectedNavi.name,
-                                style = MaterialTheme.typography.titleMedium,
-                                fontWeight = FontWeight.Bold,
-                                color = MaterialTheme.colorScheme.primary
-                            )
-                        }
-                        
-                        item {
-                            FlowRow(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                                verticalArrangement = Arrangement.spacedBy(8.dp)
-                            ) {
-                                selectedNavi.articles.forEach { article ->
-                                    SuggestionChip(
-                                        onClick = { onArticleClick(article.link) },
-                                        label = { 
-                                            Text(
-                                                text = article.displayTitle,
-                                                fontSize = 13.sp
-                                            ) 
-                                        },
-                                        shape = CircleShape
-                                    )
+                    // 右侧内容区
+                    LazyColumn(
+                        state = rightListState,
+                        modifier = Modifier
+                            .weight(1f)
+                            .fillMaxHeight()
+                            .padding(16.dp),
+                        verticalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        if (state.naviList.isNotEmpty()) {
+                            val selectedNavi = state.naviList[state.selectedIndex]
+                            item {
+                                Text(
+                                    text = selectedNavi.name,
+                                    style = MaterialTheme.typography.titleMedium,
+                                    fontWeight = FontWeight.Bold,
+                                    color = MaterialTheme.colorScheme.primary
+                                )
+                            }
+                            
+                            item {
+                                FlowRow(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                                ) {
+                                    selectedNavi.articles.forEach { article ->
+                                        SuggestionChip(
+                                            onClick = { onArticleClick(article.link) },
+                                            label = { 
+                                                Text(
+                                                    text = article.displayTitle,
+                                                    fontSize = 13.sp
+                                                ) 
+                                            },
+                                            shape = CircleShape
+                                        )
+                                    }
                                 }
                             }
                         }

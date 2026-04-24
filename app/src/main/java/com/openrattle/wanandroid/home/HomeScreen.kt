@@ -65,6 +65,7 @@ fun HomeScreen(
                 is HomeEffect.ShowMessage -> {
                     Toast.makeText(context, effect.message, Toast.LENGTH_SHORT).show()
                 }
+
                 is HomeEffect.NavigateToLogin -> {
                     onNavigateToLogin()
                 }
@@ -168,11 +169,14 @@ fun HomeScreen(
             // 根据状态显示不同内容
             when {
                 state.error != null && state.articles.isEmpty() && !state.isLoading -> {
-                    ErrorContent(
-                        error = state.error!!,
-                        onRetry = { viewModel.dispatch(HomeIntent.LoadData) }
-                    )
+                    state.error?.let {
+                        ErrorContent(
+                            error = it,
+                            onRetry = { viewModel.dispatch(HomeIntent.LoadData) }
+                        )
+                    }
                 }
+
                 else -> {
                     LazyColumn(
                         state = listState,
@@ -199,9 +203,9 @@ fun HomeScreen(
                         ) { article ->
                             ArticleItem(
                                 article = article,
-                                onClick = { 
+                                onClick = {
                                     viewModel.dispatch(HomeIntent.SaveHistory(article))
-                                    onArticleClick(article.link) 
+                                    onArticleClick(article.link)
                                 },
                                 onCollectClick = {
                                     viewModel.dispatch(HomeIntent.ToggleCollect(article))
