@@ -34,9 +34,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -61,10 +58,6 @@ fun LoginScreen(
 ) {
     val state by viewModel.state.collectAsState()
     val context = LocalContext.current
-    
-    var username by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
-    var passwordVisible by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         viewModel.effect.collectLatest { effect ->
@@ -151,39 +144,41 @@ fun LoginScreen(
 
                 item {
                     OutlinedTextField(
-                        value = username,
-                        onValueChange = { username = it },
+                        value = state.username,
+                        onValueChange = { viewModel.dispatch(LoginIntent.UpdateUsername(it)) },
                         label = { Text(stringResource(R.string.username)) },
                         modifier = Modifier.fillMaxWidth(),
                         singleLine = true,
                         leadingIcon = {
                             Icon(Icons.Default.Person, contentDescription = null)
                         },
-                        shape = MaterialTheme.shapes.large
+                        shape = MaterialTheme.shapes.large,
+                        enabled = !state.isLoading
                     )
                     
                     Spacer(modifier = Modifier.height(16.dp))
                     
                     OutlinedTextField(
-                        value = password,
-                        onValueChange = { password = it },
+                        value = state.password,
+                        onValueChange = { viewModel.dispatch(LoginIntent.UpdatePassword(it)) },
                         label = { Text(stringResource(R.string.password)) },
                         modifier = Modifier.fillMaxWidth(),
                         singleLine = true,
                         leadingIcon = {
                             Icon(Icons.Default.Lock, contentDescription = null)
                         },
-                        visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                        visualTransformation = if (state.isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                         trailingIcon = {
-                            NoRippleIconButton(onClick = { passwordVisible = !passwordVisible }) {
+                            NoRippleIconButton(onClick = { viewModel.dispatch(LoginIntent.TogglePasswordVisibility) }) {
                                 Icon(
-                                    imageVector = if (passwordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff,
+                                    imageVector = if (state.isPasswordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff,
                                     contentDescription = null
                                 )
                             }
                         },
-                        shape = MaterialTheme.shapes.large
+                        shape = MaterialTheme.shapes.large,
+                        enabled = !state.isLoading
                     )
                     
                     Spacer(modifier = Modifier.height(32.dp))
@@ -192,15 +187,15 @@ fun LoginScreen(
                 item {
                     Button(
                         onClick = {
-                            if (username.isBlank()) {
+                            if (state.username.isBlank()) {
                                 Toast.makeText(context, R.string.please_enter_username, Toast.LENGTH_SHORT).show()
                                 return@Button
                             }
-                            if (password.isBlank()) {
+                            if (state.password.isBlank()) {
                                 Toast.makeText(context, R.string.please_enter_password, Toast.LENGTH_SHORT).show()
                                 return@Button
                             }
-                            viewModel.dispatch(LoginIntent.Login(username, password))
+                            viewModel.dispatch(LoginIntent.Login)
                         },
                         modifier = Modifier
                             .fillMaxWidth()

@@ -13,13 +13,25 @@ class LoginViewModel @Inject constructor(
 
     override suspend fun handleIntent(intent: LoginIntent) {
         when (intent) {
+            is LoginIntent.UpdateUsername -> {
+                updateState { it.copy(username = intent.username) }
+            }
+            is LoginIntent.UpdatePassword -> {
+                updateState { it.copy(password = intent.password) }
+            }
+            is LoginIntent.TogglePasswordVisibility -> {
+                updateState { it.copy(isPasswordVisible = !it.isPasswordVisible) }
+            }
             is LoginIntent.Login -> {
-                performLogin(intent.username, intent.password)
+                performLogin()
             }
         }
     }
 
-    private suspend fun performLogin(username: String, password: String) {
+    private suspend fun performLogin() {
+        val username = state.value.username
+        val password = state.value.password
+
         updateState { it.copy(isLoading = true, error = null) }
         repository.login(username, password).onSuccess {
             updateState { it.copy(isLoading = false, success = true) }

@@ -35,9 +35,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -62,11 +59,6 @@ fun RegisterScreen(
 ) {
     val state by viewModel.state.collectAsState()
     val context = LocalContext.current
-    
-    var username by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
-    var repassword by remember { mutableStateOf("") }
-    var passwordVisible by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         viewModel.effect.collectLatest { effect ->
@@ -153,63 +145,66 @@ fun RegisterScreen(
 
                 item {
                     OutlinedTextField(
-                        value = username,
-                        onValueChange = { username = it },
+                        value = state.username,
+                        onValueChange = { viewModel.dispatch(RegisterIntent.UpdateUsername(it)) },
                         label = { Text(stringResource(R.string.username)) },
                         modifier = Modifier.fillMaxWidth(),
                         singleLine = true,
                         leadingIcon = {
                             Icon(Icons.Default.Person, contentDescription = null)
                         },
-                        shape = MaterialTheme.shapes.large
+                        shape = MaterialTheme.shapes.large,
+                        enabled = !state.isLoading
                     )
                     
                     Spacer(modifier = Modifier.height(16.dp))
                     
                     OutlinedTextField(
-                        value = password,
-                        onValueChange = { password = it },
+                        value = state.password,
+                        onValueChange = { viewModel.dispatch(RegisterIntent.UpdatePassword(it)) },
                         label = { Text(stringResource(R.string.password)) },
                         modifier = Modifier.fillMaxWidth(),
                         singleLine = true,
                         leadingIcon = {
                             Icon(Icons.Default.Lock, contentDescription = null)
                         },
-                        visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                        visualTransformation = if (state.isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                         trailingIcon = {
-                            NoRippleIconButton(onClick = { passwordVisible = !passwordVisible }) {
+                            NoRippleIconButton(onClick = { viewModel.dispatch(RegisterIntent.TogglePasswordVisibility) }) {
                                 Icon(
-                                    imageVector = if (passwordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff,
+                                    imageVector = if (state.isPasswordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff,
                                     contentDescription = null
                                 )
                             }
                         },
-                        shape = MaterialTheme.shapes.large
+                        shape = MaterialTheme.shapes.large,
+                        enabled = !state.isLoading
                     )
 
                     Spacer(modifier = Modifier.height(16.dp))
 
                     OutlinedTextField(
-                        value = repassword,
-                        onValueChange = { repassword = it },
+                        value = state.repassword,
+                        onValueChange = { viewModel.dispatch(RegisterIntent.UpdateRepassword(it)) },
                         label = { Text(stringResource(R.string.repassword)) },
                         modifier = Modifier.fillMaxWidth(),
                         singleLine = true,
                         leadingIcon = {
                             Icon(Icons.Default.Lock, contentDescription = null)
                         },
-                        visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                        visualTransformation = if (state.isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                         trailingIcon = {
-                            NoRippleIconButton(onClick = { passwordVisible = !passwordVisible }) {
+                            NoRippleIconButton(onClick = { viewModel.dispatch(RegisterIntent.TogglePasswordVisibility) }) {
                                 Icon(
-                                    imageVector = if (passwordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff,
+                                    imageVector = if (state.isPasswordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff,
                                     contentDescription = null
                                 )
                             }
                         },
-                        shape = MaterialTheme.shapes.large
+                        shape = MaterialTheme.shapes.large,
+                        enabled = !state.isLoading
                     )
                     
                     Spacer(modifier = Modifier.height(32.dp))
@@ -218,23 +213,23 @@ fun RegisterScreen(
                 item {
                     Button(
                         onClick = {
-                            if (username.isBlank()) {
+                            if (state.username.isBlank()) {
                                 Toast.makeText(context, R.string.please_enter_username, Toast.LENGTH_SHORT).show()
                                 return@Button
                             }
-                            if (password.isBlank()) {
+                            if (state.password.isBlank()) {
                                 Toast.makeText(context, R.string.please_enter_password, Toast.LENGTH_SHORT).show()
                                 return@Button
                             }
-                            if (repassword.isBlank()) {
+                            if (state.repassword.isBlank()) {
                                 Toast.makeText(context, R.string.please_enter_repassword, Toast.LENGTH_SHORT).show()
                                 return@Button
                             }
-                            if (password != repassword) {
+                            if (state.password != state.repassword) {
                                 Toast.makeText(context, R.string.passwords_not_match, Toast.LENGTH_SHORT).show()
                                 return@Button
                             }
-                            viewModel.dispatch(RegisterIntent.Register(username, password, repassword))
+                            viewModel.dispatch(RegisterIntent.Register)
                         },
                         modifier = Modifier
                             .fillMaxWidth()
