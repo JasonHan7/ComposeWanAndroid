@@ -23,7 +23,7 @@ import kotlinx.coroutines.flow.collectLatest
 fun ShareArticleScreen(
     onBack: () -> Unit,
     onNavigateToLogin: () -> Unit,
-    viewModel: PlazaViewModel = hiltViewModel()
+    viewModel: ShareArticleViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsState()
     val context = LocalContext.current
@@ -33,13 +33,13 @@ fun ShareArticleScreen(
     LaunchedEffect(Unit) {
         viewModel.effect.collectLatest { effect ->
             when (effect) {
-                is PlazaEffect.ShowMessage -> {
+                is ShareArticleEffect.ShowMessage -> {
                     Toast.makeText(context, effect.message, Toast.LENGTH_SHORT).show()
                 }
-                is PlazaEffect.NavigateToLogin -> {
+                is ShareArticleEffect.NavigateToLogin -> {
                     onNavigateToLogin()
                 }
-                is PlazaEffect.NavigateBack -> {
+                is ShareArticleEffect.NavigateBack -> {
                     // 对于页面来说，NavigateBack 代表操作成功，可以返回
                     onBack()
                 }
@@ -58,7 +58,7 @@ fun ShareArticleScreen(
                 },
                 actions = {
                     IconButton(
-                        onClick = { viewModel.dispatch(PlazaIntent.ShareArticle(title, link)) },
+                        onClick = { viewModel.dispatch(ShareArticleIntent.ShareArticle(title, link)) },
                         enabled = !state.isSharing && title.isNotBlank() && link.isNotBlank()
                     ) {
                         Icon(Icons.Default.Done, contentDescription = stringResource(R.string.submit))

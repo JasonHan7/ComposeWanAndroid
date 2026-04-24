@@ -8,8 +8,7 @@ data class PlazaState(
     val isLoadingMore: Boolean = false,
     val currentPage: Int = 0,
     val hasMore: Boolean = true,
-    val error: String? = null,
-    val isSharing: Boolean = false
+    val error: String? = null
 )
 
 sealed class PlazaIntent {
@@ -17,12 +16,10 @@ sealed class PlazaIntent {
     data object Refresh : PlazaIntent()
     data object LoadMore : PlazaIntent()
     data class ToggleCollect(val article: Article) : PlazaIntent()
-    data class ShareArticle(val title: String, val link: String) : PlazaIntent()
     data class SaveHistory(val article: Article) : PlazaIntent()
 }
 
 sealed class PlazaEffect {
     data class ShowMessage(val message: String) : PlazaEffect()
     data object NavigateToLogin : PlazaEffect()
-    data object NavigateBack : PlazaEffect()
 }

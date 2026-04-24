@@ -19,7 +19,6 @@ private const val TAG = "PlazaVM"
 class PlazaViewModel @Inject constructor(
     private val getPlazaArticlesUseCase: GetPlazaArticlesUseCase,
     private val loadMorePlazaArticlesUseCase: LoadMorePlazaArticlesUseCase,
-    private val shareArticleUseCase: ShareArticleUseCase,
     private val collectArticleUseCase: CollectArticleUseCase,
     private val addHistoryUseCase: AddHistoryUseCase
 ) : MviViewModel<PlazaState, PlazaIntent, PlazaEffect>() {
@@ -41,32 +40,12 @@ class PlazaViewModel @Inject constructor(
             is PlazaIntent.Refresh -> refresh()
             is PlazaIntent.LoadMore -> loadMore()
             is PlazaIntent.ToggleCollect -> toggleCollect(intent.article)
-            is PlazaIntent.ShareArticle -> shareArticle(intent.title, intent.link)
             is PlazaIntent.SaveHistory -> saveHistory(intent.article)
         }
     }
 
     private suspend fun saveHistory(article: Article) {
         addHistoryUseCase(article)
-    }
-
-    private suspend fun shareArticle(title: String, link: String) {
-        if (state.value.isSharing) return
-        
-        updateState { it.copy(isSharing = true) }
-        
-        shareArticleUseCase(title, link)
-            .onSuccess {
-                updateState { it.copy(isSharing = false) }
-                emitEffect(PlazaEffect.ShowMessage("分享成功"))
-                emitEffect(PlazaEffect.NavigateBack)
-                // 分享成功后触发一次刷新，以便看到自己的分享（如果审核通过的话）
-                refresh()
-            }
-            .onError { e ->
-                updateState { it.copy(isSharing = false) }
-                handleException(e)
-            }
     }
 
     private suspend fun toggleCollect(article: Article) {
