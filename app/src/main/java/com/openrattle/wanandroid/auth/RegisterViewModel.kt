@@ -1,5 +1,6 @@
 package com.openrattle.wanandroid.auth
 
+import com.openrattle.base.onError
 import com.openrattle.core.MviViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -40,9 +41,9 @@ class RegisterViewModel @Inject constructor(
         repository.register(username, password, repassword).onSuccess {
             updateState { it.copy(isLoading = false, success = true) }
             emitEffect(RegisterEffect.RegisterSuccess)
-        }.onFailure { e ->
+        }.onError { e ->
             updateState { it.copy(isLoading = false, error = e.message) }
-            emitEffect(RegisterEffect.ShowMessage(e.message ?: "注册失败"))
+            emitEffect(RegisterEffect.ShowMessage(e.message))
         }
     }
 }

@@ -1,5 +1,6 @@
 package com.openrattle.wanandroid.auth
 
+import com.openrattle.base.onError
 import com.openrattle.core.MviViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -36,9 +37,9 @@ class LoginViewModel @Inject constructor(
         repository.login(username, password).onSuccess {
             updateState { it.copy(isLoading = false, success = true) }
             emitEffect(LoginEffect.LoginSuccess)
-        }.onFailure { e ->
+        }.onError { e ->
             updateState { it.copy(isLoading = false, error = e.message) }
-            emitEffect(LoginEffect.ShowMessage(e.message ?: "登录失败"))
+            emitEffect(LoginEffect.ShowMessage(e.message))
         }
     }
 }

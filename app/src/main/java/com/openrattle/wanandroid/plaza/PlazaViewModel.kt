@@ -90,7 +90,7 @@ class PlazaViewModel @Inject constructor(
                     getPlazaArticlesUseCase.refresh()
                 }
             }
-            .onFailure { e ->
+            .onError { e ->
                 updateState { it.copy(isLoading = false, error = e.message) }
             }
     }
@@ -110,9 +110,9 @@ class PlazaViewModel @Inject constructor(
                     ) 
                 }
             }
-            .onFailure { e ->
+            .onError { e ->
                 updateState { it.copy(isLoading = false, error = e.message) }
-                emitEffect(PlazaEffect.ShowMessage(e.message ?: "刷新失败"))
+                emitEffect(PlazaEffect.ShowMessage(e.message))
             }
     }
 
@@ -136,9 +136,9 @@ class PlazaViewModel @Inject constructor(
                     )
                 }
             }
-            .onFailure { e ->
+            .onError { e ->
                 updateState { it.copy(isLoadingMore = false) }
-                emitEffect(PlazaEffect.ShowMessage(e.message ?: "加载失败"))
+                emitEffect(PlazaEffect.ShowMessage(e.message))
             }
     }
 }

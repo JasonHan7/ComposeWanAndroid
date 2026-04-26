@@ -1,6 +1,7 @@
 package com.openrattle.wanandroid.navi
 
 import androidx.lifecycle.viewModelScope
+import com.openrattle.base.onError
 import com.openrattle.core.MviViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.collectLatest
@@ -47,9 +48,9 @@ class NaviViewModel @Inject constructor(
                     getNaviUseCase.refresh()
                 }
             }
-            .onFailure { e ->
+            .onError { e ->
                 updateState { it.copy(isLoading = false, error = e.message) }
-                emitEffect(NaviEffect.ShowMessage(e.message ?: "加载失败"))
+                emitEffect(NaviEffect.ShowMessage(e.message))
             }
     }
 }

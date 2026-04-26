@@ -1,5 +1,6 @@
 package com.openrattle.wanandroid.collect
 
+import com.openrattle.base.onError
 import com.openrattle.core.MviViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -37,9 +38,9 @@ class CollectViewModel @Inject constructor(
                     hasMore = !response.over
                 ) }
             }
-            .onFailure { e ->
+            .onError { e ->
                 updateState { it.copy(isLoading = false, error = e.message) }
-                emitEffect(CollectEffect.ShowMessage(e.message ?: "加载失败"))
+                emitEffect(CollectEffect.ShowMessage(e.message))
             }
     }
 
@@ -56,9 +57,9 @@ class CollectViewModel @Inject constructor(
                     hasMore = !response.over
                 ) }
             }
-            .onFailure { e ->
+            .onError { e ->
                 updateState { it.copy(isLoading = false, error = e.message) }
-                emitEffect(CollectEffect.ShowMessage(e.message ?: "刷新失败"))
+                emitEffect(CollectEffect.ShowMessage(e.message))
             }
     }
 
@@ -78,9 +79,9 @@ class CollectViewModel @Inject constructor(
                     hasMore = !response.over
                 ) }
             }
-            .onFailure { e ->
+            .onError { e ->
                 updateState { it.copy(isLoadingMore = false) }
-                emitEffect(CollectEffect.ShowMessage(e.message ?: "加载失败"))
+                emitEffect(CollectEffect.ShowMessage(e.message))
             }
     }
 
@@ -91,8 +92,8 @@ class CollectViewModel @Inject constructor(
                 updateState { it.copy(articles = updatedArticles) }
                 emitEffect(CollectEffect.ShowMessage("已取消收藏"))
             }
-            .onFailure { e ->
-                emitEffect(CollectEffect.ShowMessage(e.message ?: "操作失败"))
+            .onError { e ->
+                emitEffect(CollectEffect.ShowMessage(e.message))
             }
     }
 }

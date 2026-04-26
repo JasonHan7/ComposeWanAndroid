@@ -1,6 +1,7 @@
 package com.openrattle.wanandroid.history
 
 import androidx.lifecycle.viewModelScope
+import com.openrattle.base.onError
 import com.openrattle.base.model.Article
 import com.openrattle.wanandroid.collect.CollectArticleUseCase
 import com.openrattle.core.MviViewModel
@@ -45,8 +46,8 @@ class HistoryViewModel @Inject constructor(
         
         result.onSuccess {
             emitEffect(HistoryEffect.ShowMessage(if (article.collect) "取消成功" else "收藏成功"))
-        }.onFailure { e ->
-            emitEffect(HistoryEffect.ShowMessage(e.message ?: "操作失败"))
+        }.onError { e ->
+            emitEffect(HistoryEffect.ShowMessage(e.message))
         }
     }
 }

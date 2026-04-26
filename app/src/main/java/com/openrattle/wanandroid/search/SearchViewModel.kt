@@ -1,6 +1,7 @@
 package com.openrattle.wanandroid.search
 
 import androidx.lifecycle.viewModelScope
+import com.openrattle.base.onError
 import com.openrattle.base.model.Article
 import com.openrattle.wanandroid.collect.CollectArticleUseCase
 import com.openrattle.wanandroid.history.AddHistoryUseCase
@@ -75,8 +76,8 @@ class SearchViewModel @Inject constructor(
             }
             updateState { it.copy(articles = newList) }
             emitEffect(SearchEffect.ShowMessage(if (article.collect) "取消成功" else "收藏成功"))
-        }.onFailure { e ->
-            emitEffect(SearchEffect.ShowMessage(e.message ?: "操作失败"))
+        }.onError { e ->
+            emitEffect(SearchEffect.ShowMessage(e.message))
         }
     }
 
@@ -109,9 +110,9 @@ class SearchViewModel @Inject constructor(
                     hasMore = !response.over
                 ) }
             }
-            .onFailure { e ->
+            .onError { e ->
                 updateState { it.copy(isLoading = false, error = e.message) }
-                emitEffect(SearchEffect.ShowMessage(e.message ?: "搜索失败"))
+                emitEffect(SearchEffect.ShowMessage(e.message))
             }
     }
 
@@ -131,9 +132,9 @@ class SearchViewModel @Inject constructor(
                     hasMore = !response.over
                 ) }
             }
-            .onFailure { e ->
+            .onError { e ->
                 updateState { it.copy(isLoadingMore = false, error = e.message) }
-                emitEffect(SearchEffect.ShowMessage(e.message ?: "加载失败"))
+                emitEffect(SearchEffect.ShowMessage(e.message))
             }
     }
 }

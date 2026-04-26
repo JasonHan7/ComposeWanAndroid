@@ -1,5 +1,6 @@
 package com.openrattle.wanandroid.message
 
+import com.openrattle.base.onError
 import com.openrattle.core.MviViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -42,7 +43,7 @@ class MessageViewModel @Inject constructor(
                             hasMore = !readPaging.over
                         ) }
                     }
-                    .onFailure { e ->
+                    .onError { e ->
                         updateState { it.copy(
                             isLoading = false, 
                             unreadMessages = unreads,
@@ -50,7 +51,7 @@ class MessageViewModel @Inject constructor(
                         ) }
                     }
             }
-            .onFailure {
+            .onError {
                 // 如果获取未读失败（可能是没登录或没有未读），尝试获取已读列表
                 getMessageListUseCase.getReadMessages(1)
                     .onSuccess { readPaging ->
@@ -61,7 +62,7 @@ class MessageViewModel @Inject constructor(
                             hasMore = !readPaging.over
                         ) }
                     }
-                    .onFailure { e ->
+                    .onError { e ->
                         updateState { it.copy(isLoading = false, error = e.message) }
                     }
             }
@@ -87,9 +88,9 @@ class MessageViewModel @Inject constructor(
                     hasMore = !paging.over
                 ) }
             }
-            .onFailure { e ->
+            .onError { e ->
                 updateState { it.copy(isLoadingMore = false) }
-                emitEffect(MessageEffect.ShowMessage(e.message ?: "加载更多失败"))
+                emitEffect(MessageEffect.ShowMessage(e.message))
             }
     }
 }
