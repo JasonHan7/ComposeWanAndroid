@@ -1,12 +1,14 @@
 package com.openrattle.wanandroid.auth
 
+import com.openrattle.base.utils.UiText
+
 data class LoginState(
     val username: String = "",
     val password: String = "",
     val isPasswordVisible: Boolean = false,
     val isLoading: Boolean = false,
     val success: Boolean = false,
-    val error: String? = null
+    val error: UiText? = null
 )
 
 sealed class LoginIntent {
@@ -17,6 +19,6 @@ sealed class LoginIntent {
 }
 
 sealed class LoginEffect {
-    data class ShowMessage(val message: String) : LoginEffect()
+    data class ShowMessage(val message: UiText) : LoginEffect()
     data object LoginSuccess : LoginEffect()
 }

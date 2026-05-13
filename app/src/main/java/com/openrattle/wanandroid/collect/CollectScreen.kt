@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.openrattle.wanandroid.R
 import com.openrattle.common_ui.components.LoadingMoreItem
+import com.openrattle.common_ui.utils.asString
 import com.openrattle.wanandroid.ui.components.ArticleItem
 import com.openrattle.wanandroid.ui.components.NoRippleIconButton
 import kotlinx.coroutines.flow.collectLatest
@@ -40,7 +41,7 @@ fun CollectScreen(
         viewModel.effect.collectLatest { effect ->
             when (effect) {
                 is CollectEffect.ShowMessage -> {
-                    Toast.makeText(context, effect.message, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, effect.message.asString(context), Toast.LENGTH_SHORT).show()
                 }
             }
         }
@@ -67,7 +68,7 @@ fun CollectScreen(
                 title = { Text(stringResource(R.string.my_favorites)) },
                 navigationIcon = {
                     NoRippleIconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.back))
                     }
                 }
             )
@@ -90,7 +91,7 @@ fun CollectScreen(
         ) {
             if (state.articles.isEmpty() && !state.isLoading) {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    Text("暂无收藏内容", color = MaterialTheme.colorScheme.outline)
+                    Text(stringResource(R.string.no_collect_data), color = MaterialTheme.colorScheme.outline)
                 }
             } else {
                 LazyColumn(
@@ -139,7 +140,7 @@ fun CollectScreen(
                                 horizontalAlignment = Alignment.CenterHorizontally
                             ) {
                                 Text(
-                                    text = stringResource(R.string.error_msg, error),
+                                    text = stringResource(R.string.error_msg, error.asString()),
                                     color = MaterialTheme.colorScheme.error,
                                     style = MaterialTheme.typography.bodyMedium
                                 )
@@ -147,7 +148,7 @@ fun CollectScreen(
                                 Button(
                                     onClick = { viewModel.dispatch(CollectIntent.Refresh) }
                                 ) {
-                                    Text("重新加载")
+                                    Text(stringResource(R.string.refresh))
                                 }
                             }
                         }

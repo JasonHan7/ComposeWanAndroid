@@ -1,6 +1,7 @@
 package com.openrattle.wanandroid.auth
 
 import com.openrattle.base.onError
+import com.openrattle.base.utils.UiText
 import com.openrattle.core.MviViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -38,8 +39,8 @@ class LoginViewModel @Inject constructor(
             updateState { it.copy(isLoading = false, success = true) }
             emitEffect(LoginEffect.LoginSuccess)
         }.onError { e ->
-            updateState { it.copy(isLoading = false, error = e.message) }
-            emitEffect(LoginEffect.ShowMessage(e.message))
+            updateState { it.copy(isLoading = false, error = UiText.DynamicString(e.message)) }
+            emitEffect(LoginEffect.ShowMessage(UiText.DynamicString(e.message)))
         }
     }
 }

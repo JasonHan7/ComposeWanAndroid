@@ -51,7 +51,7 @@ fun HistoryScreen(
         viewModel.effect.collectLatest { effect ->
             when (effect) {
                 is HistoryEffect.ShowMessage -> {
-                    Toast.makeText(context, effect.message, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, effect.message.asString(context), Toast.LENGTH_SHORT).show()
                 }
                 is HistoryEffect.NavigateToLogin -> {
                     onNavigateToLogin()
@@ -82,7 +82,7 @@ fun HistoryScreen(
         if (state.articles.isEmpty()) {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 Text(
-                    text = "暂无浏览历史",
+                    text = stringResource(R.string.no_history),
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -109,19 +109,19 @@ fun HistoryScreen(
     if (showDeleteAllDialog) {
         AlertDialog(
             onDismissRequest = { showDeleteAllDialog = false },
-            title = { Text("清空历史") },
-            text = { Text("确认要清空所有浏览记录吗？") },
+            title = { Text(stringResource(R.string.clear)) },
+            text = { Text(stringResource(R.string.clear_history_confirm)) },
             confirmButton = {
                 TextButton(onClick = {
                     viewModel.dispatch(HistoryIntent.ClearAll)
                     showDeleteAllDialog = false
                 }) {
-                    Text("清空", color = MaterialTheme.colorScheme.error)
+                    Text(stringResource(R.string.clear), color = MaterialTheme.colorScheme.error)
                 }
             },
             dismissButton = {
                 TextButton(onClick = { showDeleteAllDialog = false }) {
-                    Text("取消")
+                    Text(stringResource(R.string.back))
                 }
             }
         )

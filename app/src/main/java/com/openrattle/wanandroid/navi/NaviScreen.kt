@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.openrattle.common_ui.components.WanLoadingIndicator
+import com.openrattle.common_ui.utils.asString
 import com.openrattle.wanandroid.R
 import kotlinx.coroutines.flow.collectLatest
 
@@ -39,7 +40,7 @@ fun NaviScreen(
         viewModel.effect.collectLatest { effect ->
             when (effect) {
                 is NaviEffect.ShowMessage -> {
-                    Toast.makeText(context, effect.message, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, effect.message.asString(context), Toast.LENGTH_SHORT).show()
                 }
             }
         }
@@ -63,7 +64,7 @@ fun NaviScreen(
                 Box(modifier = Modifier.fillMaxSize().padding(padding), contentAlignment = Alignment.Center) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Text(
-                            text = stringResource(R.string.error_msg, error),
+                            text = stringResource(R.string.error_msg, error.asString()),
                             color = MaterialTheme.colorScheme.error,
                             style = MaterialTheme.typography.bodyMedium,
                             textAlign = TextAlign.Center

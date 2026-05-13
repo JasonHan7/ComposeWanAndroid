@@ -1,10 +1,12 @@
 package com.openrattle.wanandroid.plaza
 
 import androidx.lifecycle.viewModelScope
+import com.openrattle.wanandroid.R
 import com.openrattle.base.AppException
 import com.openrattle.base.onError
 import com.openrattle.base.model.Article
 import com.openrattle.base.utils.LogUtil
+import com.openrattle.base.utils.UiText
 import com.openrattle.wanandroid.history.AddHistoryUseCase
 import com.openrattle.wanandroid.collect.CollectArticleUseCase
 import com.openrattle.core.MviViewModel
@@ -56,7 +58,10 @@ class PlazaViewModel @Inject constructor(
         }
         
         result.onSuccess {
-            emitEffect(PlazaEffect.ShowMessage(if (article.collect) "取消成功" else "收藏成功"))
+            emitEffect(PlazaEffect.ShowMessage(
+                if (article.collect) UiText.ResourceString(R.string.uncollect_success) 
+                else UiText.ResourceString(R.string.collect_success)
+            ))
         }.onError { e ->
             handleException(e)
         }
@@ -68,11 +73,11 @@ class PlazaViewModel @Inject constructor(
     private fun handleException(exception: AppException) {
         when (exception) {
             is AppException.Api.Unauthorized -> {
-                emitEffect(PlazaEffect.ShowMessage("请先登录"))
+                emitEffect(PlazaEffect.ShowMessage(UiText.ResourceString(R.string.login_first)))
                 emitEffect(PlazaEffect.NavigateToLogin)
             }
             else -> {
-                emitEffect(PlazaEffect.ShowMessage(exception.message))
+                emitEffect(PlazaEffect.ShowMessage(UiText.DynamicString(exception.message)))
             }
         }
     }
@@ -91,7 +96,7 @@ class PlazaViewModel @Inject constructor(
                 }
             }
             .onError { e ->
-                updateState { it.copy(isLoading = false, error = e.message) }
+                updateState { it.copy(isLoading = false, error = UiText.DynamicString(e.message)) }
             }
     }
 
@@ -111,8 +116,8 @@ class PlazaViewModel @Inject constructor(
                 }
             }
             .onError { e ->
-                updateState { it.copy(isLoading = false, error = e.message) }
-                emitEffect(PlazaEffect.ShowMessage(e.message))
+                updateState { it.copy(isLoading = false, error = UiText.DynamicString(e.message)) }
+                emitEffect(PlazaEffect.ShowMessage(UiText.ResourceString(R.string.refresh_failed)))
             }
     }
 
@@ -136,9 +141,9 @@ class PlazaViewModel @Inject constructor(
                     )
                 }
             }
-            .onError { e ->
+            .onError { _ ->
                 updateState { it.copy(isLoadingMore = false) }
-                emitEffect(PlazaEffect.ShowMessage(e.message))
+                emitEffect(PlazaEffect.ShowMessage(UiText.ResourceString(R.string.load_failed)))
             }
     }
 }

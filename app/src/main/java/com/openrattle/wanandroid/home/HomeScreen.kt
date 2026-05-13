@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.openrattle.wanandroid.R
 import com.openrattle.common_ui.components.LoadingMoreItem
+import com.openrattle.common_ui.utils.asString
 import com.openrattle.wanandroid.ui.components.ArticleItem
 import kotlinx.coroutines.flow.collectLatest
 
@@ -63,7 +64,7 @@ fun HomeScreen(
         viewModel.effect.collectLatest { effect ->
             when (effect) {
                 is HomeEffect.ShowMessage -> {
-                    Toast.makeText(context, effect.message, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, effect.message.asString(context), Toast.LENGTH_SHORT).show()
                 }
 
                 is HomeEffect.NavigateToLogin -> {
@@ -171,7 +172,7 @@ fun HomeScreen(
                 state.error != null && state.articles.isEmpty() && !state.isLoading -> {
                     state.error?.let {
                         ErrorContent(
-                            error = it,
+                            error = it.asString(),
                             onRetry = { viewModel.dispatch(HomeIntent.LoadData) }
                         )
                     }

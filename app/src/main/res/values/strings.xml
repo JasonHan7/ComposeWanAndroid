@@ -44,7 +44,31 @@
     <string name="rank">排名</string>
     <string name="user_id">ID: %1$s</string>
     <string name="collect">收藏</string>
-    <string name="dark_mode">主题模式</string>
+    <string name="uncollect">取消收藏</string>
+    <string name="collect_success">收藏成功</string>
+    <string name="uncollect_success">取消成功</string>
+    <string name="share_success">分享成功</string>
+    <string name="login_first">请先登录</string>
+    <string name="load_failed">加载失败</string>
+    <string name="refresh_failed">刷新失败</string>
+    <string name="operation_failed">操作失败</string>
+    <string name="no_history">暂无浏览历史</string>
+    <string name="clear_history_confirm">确认要清空所有浏览记录吗？</string>
+    <string name="clear">清空</string>
+    <string name="message_center">消息中心</string>
+    <string name="no_message">暂无消息</string>
+    <string name="latest_unread">最新未读</string>
+    <string name="history_message">历史消息</string>
+    <string name="no_qa_data">暂无问答数据</string>
+    <string name="no_collect_data">暂无收藏内容</string>
+    <string name="hot_search_label">热门搜索</string>
+    <string name="no_search_history">暂无搜索历史</string>
+    <string name="delete">删除</string>
+    <string name="select_theme_mode">选择主题模式</string>
+    <string name="follow_system">跟随系统</string>
+    <string name="light_mode">浅色模式</string>
+    <string name="dark_mode_label">深色模式</string>
+    <string name="theme_mode">主题模式</string>
     <string name="eye_protection">护眼模式</string>
 
     <!-- Login Screen -->

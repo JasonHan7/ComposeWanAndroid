@@ -1,5 +1,7 @@
 package com.openrattle.wanandroid.auth
 
+import com.openrattle.base.utils.UiText
+
 data class RegisterState(
     val username: String = "",
     val password: String = "",
@@ -7,7 +9,7 @@ data class RegisterState(
     val isPasswordVisible: Boolean = false,
     val isLoading: Boolean = false,
     val success: Boolean = false,
-    val error: String? = null
+    val error: UiText? = null
 )
 
 sealed class RegisterIntent {
@@ -19,6 +21,6 @@ sealed class RegisterIntent {
 }
 
 sealed class RegisterEffect {
-    data class ShowMessage(val message: String) : RegisterEffect()
+    data class ShowMessage(val message: UiText) : RegisterEffect()
     data object RegisterSuccess : RegisterEffect()
 }

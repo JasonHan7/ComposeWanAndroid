@@ -1,8 +1,10 @@
 package com.openrattle.wanandroid.plaza
 
+import com.openrattle.base.utils.UiText
+
 data class ShareArticleState(
     val isSharing: Boolean = false,
-    val error: String? = null
+    val error: UiText? = null
 )
 
 sealed class ShareArticleIntent {
@@ -10,7 +12,7 @@ sealed class ShareArticleIntent {
 }
 
 sealed class ShareArticleEffect {
-    data class ShowMessage(val message: String) : ShareArticleEffect()
+    data class ShowMessage(val message: UiText) : ShareArticleEffect()
     data object NavigateToLogin : ShareArticleEffect()
     data object NavigateBack : ShareArticleEffect()
 }

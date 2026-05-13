@@ -1,6 +1,7 @@
 package com.openrattle.wanandroid.message
 
 import com.openrattle.base.onError
+import com.openrattle.base.utils.UiText
 import com.openrattle.core.MviViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -47,7 +48,7 @@ class MessageViewModel @Inject constructor(
                         updateState { it.copy(
                             isLoading = false, 
                             unreadMessages = unreads,
-                            error = e.message 
+                            error = UiText.DynamicString(e.message) 
                         ) }
                     }
             }
@@ -63,7 +64,7 @@ class MessageViewModel @Inject constructor(
                         ) }
                     }
                     .onError { e ->
-                        updateState { it.copy(isLoading = false, error = e.message) }
+                        updateState { it.copy(isLoading = false, error = UiText.DynamicString(e.message)) }
                     }
             }
     }
@@ -90,7 +91,7 @@ class MessageViewModel @Inject constructor(
             }
             .onError { e ->
                 updateState { it.copy(isLoadingMore = false) }
-                emitEffect(MessageEffect.ShowMessage(e.message))
+                emitEffect(MessageEffect.ShowMessage(UiText.DynamicString(e.message)))
             }
     }
 }

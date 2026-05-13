@@ -1,6 +1,7 @@
 package com.openrattle.wanandroid.history
 
 import com.openrattle.base.model.Article
+import com.openrattle.base.utils.UiText
 
 data class HistoryState(
     val articles: List<Article> = emptyList(),
@@ -15,6 +16,6 @@ sealed class HistoryIntent {
 }
 
 sealed class HistoryEffect {
-    data class ShowMessage(val message: String) : HistoryEffect()
+    data class ShowMessage(val message: UiText) : HistoryEffect()
     data object NavigateToLogin : HistoryEffect()
 }

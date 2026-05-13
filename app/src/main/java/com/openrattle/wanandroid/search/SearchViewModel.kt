@@ -1,8 +1,10 @@
 package com.openrattle.wanandroid.search
 
+import com.openrattle.wanandroid.R
 import androidx.lifecycle.viewModelScope
 import com.openrattle.base.onError
 import com.openrattle.base.model.Article
+import com.openrattle.base.utils.UiText
 import com.openrattle.wanandroid.collect.CollectArticleUseCase
 import com.openrattle.wanandroid.history.AddHistoryUseCase
 import com.openrattle.core.MviViewModel
@@ -75,9 +77,12 @@ class SearchViewModel @Inject constructor(
                 if (it.id == article.id) it.copy(collect = !article.collect) else it
             }
             updateState { it.copy(articles = newList) }
-            emitEffect(SearchEffect.ShowMessage(if (article.collect) "取消成功" else "收藏成功"))
+            emitEffect(SearchEffect.ShowMessage(
+                if (article.collect) UiText.ResourceString(R.string.uncollect_success) 
+                else UiText.ResourceString(R.string.collect_success)
+            ))
         }.onError { e ->
-            emitEffect(SearchEffect.ShowMessage(e.message))
+            emitEffect(SearchEffect.ShowMessage(UiText.DynamicString(e.message)))
         }
     }
 
@@ -111,8 +116,8 @@ class SearchViewModel @Inject constructor(
                 ) }
             }
             .onError { e ->
-                updateState { it.copy(isLoading = false, error = e.message) }
-                emitEffect(SearchEffect.ShowMessage(e.message))
+                updateState { it.copy(isLoading = false, error = UiText.DynamicString(e.message)) }
+                emitEffect(SearchEffect.ShowMessage(UiText.DynamicString(e.message)))
             }
     }
 
@@ -133,8 +138,8 @@ class SearchViewModel @Inject constructor(
                 ) }
             }
             .onError { e ->
-                updateState { it.copy(isLoadingMore = false, error = e.message) }
-                emitEffect(SearchEffect.ShowMessage(e.message))
+                updateState { it.copy(isLoadingMore = false, error = UiText.DynamicString(e.message)) }
+                emitEffect(SearchEffect.ShowMessage(UiText.DynamicString(e.message)))
             }
     }
 }

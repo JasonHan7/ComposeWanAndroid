@@ -37,9 +37,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.openrattle.wanandroid.R
 import com.openrattle.base.model.Message
 import com.openrattle.common_ui.components.LoadingMoreItem
 import com.openrattle.wanandroid.ui.components.NoRippleIconButton
@@ -61,7 +63,7 @@ fun MessageScreen(
         viewModel.effect.collectLatest { effect ->
             when (effect) {
                 is MessageEffect.ShowMessage -> {
-                    Toast.makeText(context, effect.message, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, effect.message.asString(context), Toast.LENGTH_SHORT).show()
                 }
             }
         }
@@ -85,7 +87,7 @@ fun MessageScreen(
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text("消息中心") },
+                title = { Text(stringResource(R.string.message_center)) },
                 navigationIcon = {
                     NoRippleIconButton(onClick = onBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "返回")
@@ -111,7 +113,7 @@ fun MessageScreen(
         ) {
             if (state.readMessages.isEmpty() && state.unreadMessages.isEmpty() && !state.isLoading) {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    Text("暂无消息", color = MaterialTheme.colorScheme.outline)
+                    Text(stringResource(R.string.no_message), color = MaterialTheme.colorScheme.outline)
                 }
             } else {
                 LazyColumn(
@@ -122,7 +124,7 @@ fun MessageScreen(
                     // 未读消息分组
                     if (state.unreadMessages.isNotEmpty()) {
                         item {
-                            MessageHeader("最新未读")
+                            MessageHeader(stringResource(R.string.latest_unread))
                         }
                         items(state.unreadMessages, key = { "unread_${it.id}" }) { message ->
                             MessageItem(
@@ -138,7 +140,7 @@ fun MessageScreen(
                     // 已读消息分组
                     if (state.readMessages.isNotEmpty()) {
                         item {
-                            MessageHeader("历史消息")
+                            MessageHeader(stringResource(R.string.history_message))
                         }
                         items(state.readMessages, key = { "read_${it.id}" }) { message ->
                             MessageItem(

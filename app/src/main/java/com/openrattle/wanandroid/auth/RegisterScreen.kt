@@ -64,7 +64,7 @@ fun RegisterScreen(
         viewModel.effect.collectLatest { effect ->
             when (effect) {
                 is RegisterEffect.ShowMessage -> {
-                    Toast.makeText(context, effect.message, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, effect.message.asString(context), Toast.LENGTH_SHORT).show()
                 }
                 is RegisterEffect.RegisterSuccess -> {
                     Toast.makeText(context, R.string.register_success, Toast.LENGTH_SHORT).show()

@@ -1,6 +1,7 @@
 package com.openrattle.wanandroid.plaza
 
 import com.openrattle.base.model.Article
+import com.openrattle.base.utils.UiText
 
 data class PlazaState(
     val articles: List<Article> = emptyList(),
@@ -8,7 +9,7 @@ data class PlazaState(
     val isLoadingMore: Boolean = false,
     val currentPage: Int = 0,
     val hasMore: Boolean = true,
-    val error: String? = null
+    val error: UiText? = null
 )
 
 sealed class PlazaIntent {
@@ -20,6 +21,6 @@ sealed class PlazaIntent {
 }
 
 sealed class PlazaEffect {
-    data class ShowMessage(val message: String) : PlazaEffect()
+    data class ShowMessage(val message: UiText) : PlazaEffect()
     data object NavigateToLogin : PlazaEffect()
 }

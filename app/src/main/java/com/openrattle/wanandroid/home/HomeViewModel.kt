@@ -1,10 +1,12 @@
 package com.openrattle.wanandroid.home
 
+import com.openrattle.wanandroid.R
 import com.openrattle.base.utils.LogUtil
 import androidx.lifecycle.viewModelScope
 import com.openrattle.base.AppException
 import com.openrattle.base.model.Article
 import com.openrattle.base.onError
+import com.openrattle.base.utils.UiText
 import com.openrattle.base.common.ErrorHandler
 import com.openrattle.core.MviViewModel
 import com.openrattle.wanandroid.collect.CollectArticleUseCase
@@ -71,7 +73,10 @@ class HomeViewModel @Inject constructor(
         }
         
         result.onSuccess {
-            emitEffect(HomeEffect.ShowMessage(if (article.collect) "取消成功" else "收藏成功"))
+            emitEffect(HomeEffect.ShowMessage(
+                if (article.collect) UiText.ResourceString(R.string.uncollect_success) 
+                else UiText.ResourceString(R.string.collect_success)
+            ))
         }.onError { e ->
             handleException(e)
         }
@@ -116,11 +121,11 @@ class HomeViewModel @Inject constructor(
                 }
                 .onError { exception ->
                     handleException(exception)
-                    updateState { it.copy(isLoading = false, error = exception.message) }
+                    updateState { it.copy(isLoading = false, error = UiText.DynamicString(exception.message)) }
                 }
         } catch (e: Exception) {
             LogUtil.e(TAG, "❌ 文章加载异常", e)
-            updateState { it.copy(isLoading = false, error = e.message) }
+            updateState { it.copy(isLoading = false, error = UiText.DynamicString(e.message ?: "")) }
         }
     }
 
@@ -152,12 +157,12 @@ class HomeViewModel @Inject constructor(
                     }
                     .onError { exception ->
                         handleException(exception)
-                        updateState { it.copy(isLoading = false, error = exception.message) }
+                        updateState { it.copy(isLoading = false, error = UiText.DynamicString(exception.message)) }
                     }
             }
         } catch (e: Exception) {
             LogUtil.e(TAG, "❌ 刷新失败", e)
-            updateState { it.copy(isLoading = false, error = e.message) }
+            updateState { it.copy(isLoading = false, error = UiText.DynamicString(e.message ?: "")) }
         }
     }
 
@@ -198,18 +203,18 @@ class HomeViewModel @Inject constructor(
     private fun handleException(exception: AppException) {
         when (exception) {
             is AppException.Api.Unauthorized -> {
-                emitEffect(HomeEffect.ShowMessage("请先登录"))
+                emitEffect(HomeEffect.ShowMessage(UiText.ResourceString(R.string.login_first)))
                 emitEffect(HomeEffect.NavigateToLogin)
             }
             is AppException.Network.NoConnection,
             is AppException.Network.Timeout -> {
-                emitEffect(HomeEffect.ShowMessage("网络连接失败，请检查网络"))
+                emitEffect(HomeEffect.ShowMessage(UiText.DynamicString("网络连接失败，请检查网络")))
             }
             is AppException.Network.ServerError -> {
-                emitEffect(HomeEffect.ShowMessage("服务器繁忙，请稍后重试"))
+                emitEffect(HomeEffect.ShowMessage(UiText.DynamicString("服务器繁忙，请稍后重试")))
             }
             else -> {
-                emitEffect(HomeEffect.ShowMessage(exception.message))
+                emitEffect(HomeEffect.ShowMessage(UiText.DynamicString(exception.message)))
             }
         }
         errorHandler.handle(exception)

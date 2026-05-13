@@ -1,6 +1,8 @@
 package com.openrattle.wanandroid.collect
 
+import com.openrattle.wanandroid.R
 import com.openrattle.base.onError
+import com.openrattle.base.utils.UiText
 import com.openrattle.core.MviViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -39,8 +41,8 @@ class CollectViewModel @Inject constructor(
                 ) }
             }
             .onError { e ->
-                updateState { it.copy(isLoading = false, error = e.message) }
-                emitEffect(CollectEffect.ShowMessage(e.message))
+                updateState { it.copy(isLoading = false, error = UiText.DynamicString(e.message)) }
+                emitEffect(CollectEffect.ShowMessage(UiText.DynamicString(e.message)))
             }
     }
 
@@ -58,8 +60,8 @@ class CollectViewModel @Inject constructor(
                 ) }
             }
             .onError { e ->
-                updateState { it.copy(isLoading = false, error = e.message) }
-                emitEffect(CollectEffect.ShowMessage(e.message))
+                updateState { it.copy(isLoading = false, error = UiText.DynamicString(e.message)) }
+                emitEffect(CollectEffect.ShowMessage(UiText.DynamicString(e.message)))
             }
     }
 
@@ -81,7 +83,7 @@ class CollectViewModel @Inject constructor(
             }
             .onError { e ->
                 updateState { it.copy(isLoadingMore = false) }
-                emitEffect(CollectEffect.ShowMessage(e.message))
+                emitEffect(CollectEffect.ShowMessage(UiText.DynamicString(e.message)))
             }
     }
 
@@ -90,10 +92,10 @@ class CollectViewModel @Inject constructor(
             .onSuccess {
                 val updatedArticles = state.value.articles.filter { it.id != id }
                 updateState { it.copy(articles = updatedArticles) }
-                emitEffect(CollectEffect.ShowMessage("已取消收藏"))
+                emitEffect(CollectEffect.ShowMessage(UiText.ResourceString(R.string.uncollect_success)))
             }
             .onError { e ->
-                emitEffect(CollectEffect.ShowMessage(e.message))
+                emitEffect(CollectEffect.ShowMessage(UiText.DynamicString(e.message)))
             }
     }
 }

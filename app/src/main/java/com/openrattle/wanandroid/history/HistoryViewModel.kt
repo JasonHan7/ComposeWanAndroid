@@ -1,8 +1,10 @@
 package com.openrattle.wanandroid.history
 
+import com.openrattle.wanandroid.R
 import androidx.lifecycle.viewModelScope
 import com.openrattle.base.onError
 import com.openrattle.base.model.Article
+import com.openrattle.base.utils.UiText
 import com.openrattle.wanandroid.collect.CollectArticleUseCase
 import com.openrattle.core.MviViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -45,9 +47,12 @@ class HistoryViewModel @Inject constructor(
         }
         
         result.onSuccess {
-            emitEffect(HistoryEffect.ShowMessage(if (article.collect) "取消成功" else "收藏成功"))
+            emitEffect(HistoryEffect.ShowMessage(
+                if (article.collect) UiText.ResourceString(R.string.uncollect_success) 
+                else UiText.ResourceString(R.string.collect_success)
+            ))
         }.onError { e ->
-            emitEffect(HistoryEffect.ShowMessage(e.message))
+            emitEffect(HistoryEffect.ShowMessage(UiText.DynamicString(e.message)))
         }
     }
 }

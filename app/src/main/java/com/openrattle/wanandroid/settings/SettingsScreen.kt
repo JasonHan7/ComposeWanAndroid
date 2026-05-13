@@ -40,7 +40,7 @@ fun SettingsScreen(
         viewModel.effect.collectLatest { effect ->
             when (effect) {
                 is SettingsEffect.ShowMessage -> {
-                    Toast.makeText(context, effect.message, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, effect.message.asString(context), Toast.LENGTH_SHORT).show()
                 }
             }
         }
@@ -65,12 +65,12 @@ fun SettingsScreen(
         ) {
             item {
                 ListItem(
-                    headlineContent = { Text(stringResource(R.string.dark_mode)) },
+                    headlineContent = { Text(stringResource(R.string.theme_mode)) },
                     supportingContent = {
                         val currentModeDisplay = when (state.themeMode) {
-                            ThemeMode.FOLLOW_SYSTEM -> "跟随系统"
-                            ThemeMode.LIGHT -> "浅色模式"
-                            ThemeMode.DARK -> "深色模式"
+                            ThemeMode.FOLLOW_SYSTEM -> stringResource(R.string.follow_system)
+                            ThemeMode.LIGHT -> stringResource(R.string.light_mode)
+                            ThemeMode.DARK -> stringResource(R.string.dark_mode_label)
                         }
                         Text(currentModeDisplay)
                     },
@@ -120,11 +120,11 @@ fun SettingsScreen(
     if (showThemeDialog) {
         AlertDialog(
             onDismissRequest = { showThemeDialog = false },
-            title = { Text("选择主题模式") },
+            title = { Text(stringResource(R.string.select_theme_mode)) },
             text = {
                 Column {
                     ThemeOption(
-                        title = "跟随系统",
+                        title = stringResource(R.string.follow_system),
                         icon = Icons.Default.SettingsBrightness,
                         selected = state.themeMode == ThemeMode.FOLLOW_SYSTEM,
                         onClick = {
@@ -133,7 +133,7 @@ fun SettingsScreen(
                         }
                     )
                     ThemeOption(
-                        title = "浅色模式",
+                        title = stringResource(R.string.light_mode),
                         icon = Icons.Default.LightMode,
                         selected = state.themeMode == ThemeMode.LIGHT,
                         onClick = {
@@ -142,7 +142,7 @@ fun SettingsScreen(
                         }
                     )
                     ThemeOption(
-                        title = "深色模式",
+                        title = stringResource(R.string.dark_mode_label),
                         icon = Icons.Default.DarkMode,
                         selected = state.themeMode == ThemeMode.DARK,
                         onClick = {
@@ -154,7 +154,7 @@ fun SettingsScreen(
             },
             confirmButton = {
                 TextButton(onClick = { showThemeDialog = false }) {
-                    Text("取消")
+                    Text(stringResource(R.string.back))
                 }
             }
         )

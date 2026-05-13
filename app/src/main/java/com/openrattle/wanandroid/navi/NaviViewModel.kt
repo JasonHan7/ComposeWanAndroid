@@ -2,6 +2,7 @@ package com.openrattle.wanandroid.navi
 
 import androidx.lifecycle.viewModelScope
 import com.openrattle.base.onError
+import com.openrattle.base.utils.UiText
 import com.openrattle.core.MviViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.collectLatest
@@ -49,8 +50,8 @@ class NaviViewModel @Inject constructor(
                 }
             }
             .onError { e ->
-                updateState { it.copy(isLoading = false, error = e.message) }
-                emitEffect(NaviEffect.ShowMessage(e.message))
+                updateState { it.copy(isLoading = false, error = UiText.DynamicString(e.message)) }
+                emitEffect(NaviEffect.ShowMessage(UiText.DynamicString(e.message)))
             }
     }
 }

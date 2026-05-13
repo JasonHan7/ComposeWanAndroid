@@ -1,6 +1,7 @@
 package com.openrattle.wanandroid.qa
 
 import com.openrattle.base.model.Article
+import com.openrattle.base.utils.UiText
 
 data class QaState(
     val articles: List<Article> = emptyList(),
@@ -8,7 +9,7 @@ data class QaState(
     val isLoadingMore: Boolean = false,
     val currentPage: Int = 0,
     val hasMore: Boolean = true,
-    val error: String? = null
+    val error: UiText? = null
 )
 
 sealed class QaIntent {
@@ -20,6 +21,6 @@ sealed class QaIntent {
 }
 
 sealed class QaEffect {
-    data class ShowMessage(val message: String) : QaEffect()
+    data class ShowMessage(val message: UiText) : QaEffect()
     data object NavigateToLogin : QaEffect()
 }

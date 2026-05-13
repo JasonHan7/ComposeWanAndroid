@@ -1,8 +1,8 @@
 package com.openrattle.wanandroid.mine
 
 import androidx.lifecycle.viewModelScope
-import com.openrattle.wanandroid.auth.AuthRepository
 import com.openrattle.core.MviViewModel
+import com.openrattle.wanandroid.auth.AuthRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch

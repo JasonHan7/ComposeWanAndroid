@@ -1,8 +1,10 @@
 package com.openrattle.wanandroid.qa
 
+import com.openrattle.wanandroid.R
 import com.openrattle.base.AppException
 import com.openrattle.base.onError
 import com.openrattle.base.model.Article
+import com.openrattle.base.utils.UiText
 import androidx.lifecycle.viewModelScope
 import com.openrattle.base.utils.LogUtil
 import com.openrattle.wanandroid.collect.CollectArticleUseCase
@@ -56,7 +58,10 @@ class QaViewModel @Inject constructor(
         }
         
         result.onSuccess {
-            emitEffect(QaEffect.ShowMessage(if (article.collect) "取消成功" else "收藏成功"))
+            emitEffect(QaEffect.ShowMessage(
+                if (article.collect) UiText.ResourceString(R.string.uncollect_success) 
+                else UiText.ResourceString(R.string.collect_success)
+            ))
         }.onError { e ->
             handleException(e)
         }
@@ -68,11 +73,11 @@ class QaViewModel @Inject constructor(
     private fun handleException(exception: AppException) {
         when (exception) {
             is AppException.Api.Unauthorized -> {
-                emitEffect(QaEffect.ShowMessage("请先登录"))
+                emitEffect(QaEffect.ShowMessage(UiText.ResourceString(R.string.login_first)))
                 emitEffect(QaEffect.NavigateToLogin)
             }
             else -> {
-                emitEffect(QaEffect.ShowMessage(exception.message))
+                emitEffect(QaEffect.ShowMessage(UiText.DynamicString(exception.message)))
             }
         }
     }
@@ -90,7 +95,7 @@ class QaViewModel @Inject constructor(
                 }
             }
             .onError { e ->
-                updateState { it.copy(isLoading = false, error = e.message) }
+                updateState { it.copy(isLoading = false, error = UiText.DynamicString(e.message)) }
             }
     }
 
@@ -109,8 +114,8 @@ class QaViewModel @Inject constructor(
                 }
             }
             .onError { e ->
-                updateState { it.copy(isLoading = false, error = e.message) }
-                emitEffect(QaEffect.ShowMessage(e.message))
+                updateState { it.copy(isLoading = false, error = UiText.DynamicString(e.message)) }
+                emitEffect(QaEffect.ShowMessage(UiText.ResourceString(R.string.refresh_failed)))
             }
     }
 
@@ -134,9 +139,9 @@ class QaViewModel @Inject constructor(
                     )
                 }
             }
-            .onError { e ->
+            .onError { _ ->
                 updateState { it.copy(isLoadingMore = false) }
-                emitEffect(QaEffect.ShowMessage(e.message))
+                emitEffect(QaEffect.ShowMessage(UiText.ResourceString(R.string.load_failed)))
             }
     }
 }

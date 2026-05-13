@@ -1,6 +1,7 @@
 package com.openrattle.wanandroid.settings
 
 import com.openrattle.base.model.ThemeMode
+import com.openrattle.base.utils.UiText
 
 data class SettingsState(
     val themeMode: ThemeMode = ThemeMode.FOLLOW_SYSTEM,
@@ -13,5 +14,5 @@ sealed class SettingsIntent {
 }
 
 sealed class SettingsEffect {
-    data class ShowMessage(val message: String) : SettingsEffect()
+    data class ShowMessage(val message: UiText) : SettingsEffect()
 }

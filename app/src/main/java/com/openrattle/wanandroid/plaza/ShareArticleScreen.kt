@@ -34,7 +34,7 @@ fun ShareArticleScreen(
         viewModel.effect.collectLatest { effect ->
             when (effect) {
                 is ShareArticleEffect.ShowMessage -> {
-                    Toast.makeText(context, effect.message, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, effect.message.asString(context), Toast.LENGTH_SHORT).show()
                 }
                 is ShareArticleEffect.NavigateToLogin -> {
                     onNavigateToLogin()

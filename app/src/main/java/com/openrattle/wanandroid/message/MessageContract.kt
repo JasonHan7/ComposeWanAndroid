@@ -1,6 +1,7 @@
 package com.openrattle.wanandroid.message
 
 import com.openrattle.base.model.Message
+import com.openrattle.base.utils.UiText
 
 data class MessageState(
     val readMessages: List<Message> = emptyList(),
@@ -9,7 +10,7 @@ data class MessageState(
     val isLoadingMore: Boolean = false,
     val hasMore: Boolean = true,
     val currentPage: Int = 1, // 消息接口分页从 1 开始
-    val error: String? = null
+    val error: UiText? = null
 )
 
 sealed class MessageIntent {
@@ -19,5 +20,5 @@ sealed class MessageIntent {
 }
 
 sealed class MessageEffect {
-    data class ShowMessage(val message: String) : MessageEffect()
+    data class ShowMessage(val message: UiText) : MessageEffect()
 }

@@ -1,12 +1,14 @@
 package com.openrattle.wanandroid.mine
 
+import com.openrattle.base.utils.UiText
+
 data class MineState(
     val user: User? = null,
     val coinCount: String = "--",
     val level: String = "--",
     val rank: String = "--",
     val isLoading: Boolean = false,
-    val error: String? = null
+    val error: UiText? = null
 )
 
 data class User(
@@ -23,5 +25,5 @@ sealed class MineIntent {
 }
 
 sealed class MineEffect {
-    data class ShowMessage(val message: String) : MineEffect()
+    data class ShowMessage(val message: UiText) : MineEffect()
 }

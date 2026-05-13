@@ -1,7 +1,9 @@
 package com.openrattle.wanandroid.plaza
 
+import com.openrattle.wanandroid.R
 import com.openrattle.base.AppException
 import com.openrattle.base.onError
+import com.openrattle.base.utils.UiText
 import com.openrattle.core.MviViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -27,11 +29,11 @@ class ShareArticleViewModel @Inject constructor(
         shareArticleUseCase(title, link)
             .onSuccess {
                 updateState { it.copy(isSharing = false) }
-                emitEffect(ShareArticleEffect.ShowMessage("分享成功"))
+                emitEffect(ShareArticleEffect.ShowMessage(UiText.ResourceString(R.string.share_success)))
                 emitEffect(ShareArticleEffect.NavigateBack)
             }
             .onError { e ->
-                updateState { it.copy(isSharing = false) }
+                updateState { it.copy(isSharing = false, error = UiText.DynamicString(e.message)) }
                 handleException(e)
             }
     }
@@ -39,11 +41,11 @@ class ShareArticleViewModel @Inject constructor(
     private fun handleException(exception: AppException) {
         when (exception) {
             is AppException.Api.Unauthorized -> {
-                emitEffect(ShareArticleEffect.ShowMessage("请先登录"))
+                emitEffect(ShareArticleEffect.ShowMessage(UiText.ResourceString(R.string.login_first)))
                 emitEffect(ShareArticleEffect.NavigateToLogin)
             }
             else -> {
-                emitEffect(ShareArticleEffect.ShowMessage(exception.message))
+                emitEffect(ShareArticleEffect.ShowMessage(UiText.DynamicString(exception.message)))
             }
         }
     }

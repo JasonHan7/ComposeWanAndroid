@@ -2,6 +2,7 @@ package com.openrattle.wanandroid.home
 
 import com.openrattle.base.model.Article
 import com.openrattle.base.model.Banner
+import com.openrattle.base.utils.UiText
 
 /**
  * Home页面UI状态
@@ -14,7 +15,7 @@ data class HomeState(
     val currentPage: Int = 0,
     val hasMore: Boolean = true,
     val unreadCount: Int = 0,
-    val error: String? = null
+    val error: UiText? = null
 )
 
 /**
@@ -32,6 +33,6 @@ sealed class HomeIntent {
  * Home页面副作用
  */
 sealed class HomeEffect {
-    data class ShowMessage(val message: String) : HomeEffect()
+    data class ShowMessage(val message: UiText) : HomeEffect()
     data object NavigateToLogin : HomeEffect()
 }

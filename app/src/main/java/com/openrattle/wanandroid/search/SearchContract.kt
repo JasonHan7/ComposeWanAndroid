@@ -2,6 +2,7 @@ package com.openrattle.wanandroid.search
 
 import com.openrattle.base.model.Article
 import com.openrattle.base.model.HotKey
+import com.openrattle.base.utils.UiText
 
 data class SearchState(
     val keyword: String = "",
@@ -13,7 +14,7 @@ data class SearchState(
     val isSearchPerformed: Boolean = false,
     val currentPage: Int = 0,
     val hasMore: Boolean = true,
-    val error: String? = null
+    val error: UiText? = null
 )
 
 sealed class SearchIntent {
@@ -29,6 +30,6 @@ sealed class SearchIntent {
 }
 
 sealed class SearchEffect {
-    data class ShowMessage(val message: String) : SearchEffect()
+    data class ShowMessage(val message: UiText) : SearchEffect()
     data object NavigateToLogin : SearchEffect()
 }

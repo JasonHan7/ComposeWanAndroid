@@ -1,7 +1,6 @@
 package com.openrattle.wanandroid.settings
 
 import androidx.lifecycle.viewModelScope
-import com.openrattle.base.model.ThemeMode
 import com.openrattle.core.MviViewModel
 import com.openrattle.core.utils.SettingsManager
 import dagger.hilt.android.lifecycle.HiltViewModel

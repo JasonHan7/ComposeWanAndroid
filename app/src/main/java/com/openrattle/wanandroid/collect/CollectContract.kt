@@ -1,6 +1,7 @@
 package com.openrattle.wanandroid.collect
 
 import com.openrattle.base.model.Article
+import com.openrattle.base.utils.UiText
 
 data class CollectState(
     val articles: List<Article> = emptyList(),
@@ -8,7 +9,7 @@ data class CollectState(
     val isLoadingMore: Boolean = false,
     val currentPage: Int = 0,
     val hasMore: Boolean = true,
-    val error: String? = null
+    val error: UiText? = null
 )
 
 sealed class CollectIntent {
@@ -19,5 +20,5 @@ sealed class CollectIntent {
 }
 
 sealed class CollectEffect {
-    data class ShowMessage(val message: String) : CollectEffect()
+    data class ShowMessage(val message: UiText) : CollectEffect()
 }
